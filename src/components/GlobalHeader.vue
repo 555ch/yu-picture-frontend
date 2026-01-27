@@ -17,10 +17,25 @@
           @click="doMenuClick"
         />
       </a-col>
+      <!-- 用户信息展示栏 -->
       <a-col flex="120px">
         <div class="user-login-status">
           <div v-if="loginUserState.loginUser.id">
-            {{ loginUserState.loginUser.userName ?? '无名' }}
+            <a-dropdown>
+              <a-space>
+                <a-avatar :src="loginUserState.loginUser.userAvatar" />
+                {{ loginUserState.loginUser.userName ?? '无名' }}
+              </a-space>
+
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item @click="doLogout">
+                    <LogoutOutlined />
+                    退出登录
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </div>
           <div v-else>
             <a-button type="primary" href="/user/login">登录</a-button>
@@ -32,20 +47,23 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { computed, h, ref } from 'vue'
 import {
   MailOutlined,
   AppstoreOutlined,
   SettingOutlined,
   HomeOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons-vue'
-import { MenuProps } from 'ant-design-vue'
+import { MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import { userLogoutUsingPost } from '@/api/userController.ts'
 
 const loginUserState = useLoginUserStore()
 
-const items = ref<MenuProps['items']>([
+// 未过滤菜单项
+const originItems = [
   {
     key: '/',
     icon: () => h(HomeOutlined),
@@ -53,17 +71,34 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/about',
+    key: '/admin/userManage',
     icon: () => h(AppstoreOutlined),
-    label: '关于',
-    title: '关于',
+    label: '用户管理',
+    title: '用户管理',
   },
   {
     key: 'others',
     label: h('a', { href: 'https://antdv.com', target: '_blank' }, 'chb'),
     title: 'chb',
   },
-])
+]
+
+// 根据权限过滤菜单项
+const filterMenus = (menus = [] as MenuProps['items']) => {
+  return menus?.filter((menu) => {
+    // 过滤掉非管理员菜单项
+    if (menu?.key?.startsWith('/admin')) {
+      const loginUser = loginUserState.loginUser
+      if (!loginUser || loginUser.userRole !== 'admin') {
+        return false
+      }
+    }
+    return true
+  })
+}
+
+// 展示在菜单的路由数组
+const items = computed(() => filterMenus(originItems))
 
 const router = useRouter()
 // 路由跳转事件
@@ -79,6 +114,22 @@ const current = ref<string[]>([])
 router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
+
+// 退出登录
+const doLogout = async () => {
+  const res = await userLogoutUsingPost()
+  if (res.data.code === 0) {
+    // 登出成功，清空登录态
+    loginUserState.setLoginUser({
+      userName: '未登录',
+    })
+    message.success('退出登录成功')
+    // 跳转到登录页
+    await router.push('/user/login')
+  } else {
+    message.error('退出登录失败，' + res.data.message)
+  }
+}
 </script>
 
 <style scoped>
