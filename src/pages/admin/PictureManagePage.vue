@@ -119,7 +119,7 @@ import {
   doPictureReviewUsingPost,
   listPictureByPageUsingPost,
 } from '@/api/PictureController.ts'
-import { message } from 'ant-design-vue'
+import { message, Menu } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import {
   PIC_REVIEW_STATUS_ENUM,

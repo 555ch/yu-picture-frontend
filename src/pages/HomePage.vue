@@ -43,7 +43,7 @@
             <template #cover>
               <img
                 :alt="picture.name"
-                :src="picture.url"
+                :src="picture.thumbnailUrl ?? picture.url"
                 style="height: 180px; object-fit: cover"
               />
             </template>
@@ -126,7 +126,8 @@ const pagination = computed(() => {
   return {
     current: searchParams.current,
     pageSize: searchParams.pageSize,
-    total: total.value,
+    // total: total.value,
+    total: Number(total.value),
     onChange: (page: number, pageSize: number) => {
       searchParams.current = page
       searchParams.pageSize = pageSize

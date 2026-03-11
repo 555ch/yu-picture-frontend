@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import { computed, h, onMounted, ref } from 'vue'
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
-import { message } from 'ant-design-vue'
+import { message, Menu } from 'ant-design-vue'
 import { downloadImage, formatSize, toHexColor } from '@/utils'
 import {
   EditOutlined,
@@ -114,10 +114,6 @@ function createPermissionChecker(permission: string) {
     return (picture.value.permissionList ?? []).includes(permission)
   })
 }
-
-// 定义权限检查
-const canEdit = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
-const canDelete = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
 
 const fetchPictureDetail = async () => {
   try {
