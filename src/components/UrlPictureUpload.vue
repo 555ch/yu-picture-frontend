@@ -1,8 +1,14 @@
 <template>
   <div class="urlPictureUpload">
     <a-input-group compact>
-      <a-input v-model:value="fileUrl" style="width: calc(100% - 120px)" placeholder="请输入图片地址" />
-      <a-button type="primary" style="width: 120px;" :loading="loading" @click="handleUpload">提交</a-button>
+      <a-input
+        v-model:value="fileUrl"
+        style="width: calc(100% - 120px)"
+        placeholder="请输入图片地址"
+      />
+      <a-button type="primary" style="width: 120px" :loading="loading" @click="handleUpload"
+        >提交</a-button
+      >
     </a-input-group>
     <div class="img-wrapper">
       <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
@@ -15,8 +21,8 @@ import { message } from 'ant-design-vue'
 import { uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
 
 interface Props {
-  picture?: API.PictureVO,
-  spaceId?: string,
+  picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 

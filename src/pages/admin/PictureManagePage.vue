@@ -165,7 +165,7 @@ const columns = [
   },
   {
     title: '空间 id',
-    dataIndex: 'SpaceId',
+    dataIndex: 'spaceId',
     width: 80,
   },
   {

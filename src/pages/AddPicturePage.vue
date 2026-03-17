@@ -3,6 +3,9 @@
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '修改图片' : '创建图片' }}
     </h2>
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="updateType">
       <a-tab-pane key="file" tab="文件上传">
@@ -76,6 +79,14 @@ const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditRequest>({})
 const updateType = ref<'file' | 'url'>('file')
 
+const router = useRouter()
+const route = useRoute()
+
+// 空间 id
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
+
 /**
  * 图片上传成功
  * @param newPicture
@@ -83,9 +94,6 @@ const updateType = ref<'file' | 'url'>('file')
 const onSuccess = (newPicture: API.PictureVO) => {
   ;(picture.value = newPicture), (pictureForm.name = newPicture.name)
 }
-
-const router = useRouter()
-const route = useRoute()
 
 /**
  * 提交表单
@@ -98,6 +106,7 @@ const handleSubmit = async (values: any) => {
   }
   const res = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
   // 操作成功
