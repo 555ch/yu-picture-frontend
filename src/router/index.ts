@@ -11,6 +11,7 @@ import PictureDetailPage from '@/pages/PictureDetailPage.vue'
 import AddPictureBatchPage from '@/pages/AddPictureBatchPage.vue'
 import MySpacePage from '@/pages/MySpacePage.vue'
 import SpaceDetailPage from '@/pages/SpaceDetailPage.vue'
+import SearchPicturePage from "@/pages/SearchPicturePage.vue";
 import { Space } from 'ant-design-vue'
 
 const router = createRouter({
@@ -77,6 +78,11 @@ const router = createRouter({
       name: '空间详情',
       component: SpaceDetailPage, 
       props: true, 
+    },
+    {
+      path: '/search_picture',
+      name: '图片搜索',
+      component: SearchPicturePage,
     },
     {
       path: '/about',
